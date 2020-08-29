@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        flavorDimensions "default"
+
+        //开启dataBind  4.0版本之前写法 :dataBinding{enabled = true}
+        buildFeatures{
+            dataBinding = true
+            // for view binding :
+            // viewBinding = true
+        }
+
+        compileOptions {
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation rootProject.ext.dependencies["appcompat"]
+    //kotlin
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation rootProject.ext.dependencies["kotlin-stdlib"]
+    implementation rootProject.ext.dependencies["core-ktx"]
+    //lifecycle
+    api rootProject.ext.dependencies["lifecycle-runtime"]
+    api rootProject.ext.dependencies["lifecycle-common"]
+    api rootProject.ext.dependencies["lifecycle-extensions"]
+    //ViewModel
+    api rootProject.ext.dependencies["lifecycle-viewmodel"]
+    api rootProject.ext.dependencies["fragment-ktx"]
+    //liveData
+    api rootProject.ext.dependencies["lifecycle-liveData"]
+    //navigation
+    //api rootProject.ext.dependencies["navigation-runtime"]
+
+
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}

@@ -1,0 +1,62 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--Edittext 下划线颜色-->
+        <item name="colorControlNormal">#DDDDDD</item>
+        <item name="colorControlActivated">@color/colorActivated</item>
+        <!--activity Background-->
+        <item name="android:windowBackground">@color/colorWindowBackground</item>
+        <item name="android:textColorHint">@color/colorTextHint</item>
+        <!--自定义AlertDialog-->
+        <item name="alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert.Self</item>
+        <!--Other Setting-->
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <!--<item name="android:windowIsTranslucent">true</item> 此设置会影响activity生命周期-->
+        <!--<item name="android:windowAnimationStyle">@style/AnimationActivity</item>-->
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+
+    <!--    <style name="FullscreenThemse" parent="Theme.AppCompat.Light.NoActionBar">
+            &lt;!&ndash; Customize your theme here. &ndash;&gt;
+            <item name="colorPrimary">@color/colorPrimary</item>
+            <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+            <item name="colorAccent">@color/colorAccent</item>
+            <item name="android:windowBackground">@color/colorWindowBackground</item>
+            <item name="android:windowTranslucentStatus">true</item>
+            &lt;!&ndash;<item name="android:windowBackground">@mipmap/start_second</item>&ndash;&gt;
+        </style>-->
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.AppCompat.Light.Dialog.Alert.Self" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <!--修改AlertDialog按钮的颜色-->
+        <item name="colorAccent">#FF222222</item>
+    </style>
+
+
+    <!-- 进度条 -->
+    <declare-styleable name="ProgressView">
+        <attr name="progressIndeterminate" format="boolean" />
+        <attr name="barColor" format="color" />
+        <attr name="rimColor" format="color" />
+        <attr name="rimWidth" format="dimension" />
+        <attr name="spinSpeed" format="float" />
+        <attr name="barSpinCycleTime" format="integer" />
+        <attr name="circleRadius" format="dimension" />
+        <attr name="fillRadius" format="boolean" />
+        <attr name="barWidth" format="dimension" />
+        <attr name="linearProgress" format="boolean" />
+    </declare-styleable>
+</resources>

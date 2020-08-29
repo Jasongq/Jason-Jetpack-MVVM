@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.jetpack.mvvmdemo.viewmodel.LoginViewModel" />
+        <variable
+            name="click"
+            type="com.jetpack.mvvmdemo.ui.activity.LoginActivity.ProxyOnClick" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:gravity="center"
+                android:text="Test Login"
+                android:padding="12dp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/account_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:hint="账号"
+                android:text="@={viewModel.username}"
+                android:padding="12dp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/password_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:hint="密码"
+                android:text="@={viewModel.password}"
+                android:padding="12dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/login_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:textColor="@android:color/white"
+                android:onClick="@{()->click.goLogin()}"
+                android:background="@android:color/holo_blue_bright"
+                android:text="Login" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

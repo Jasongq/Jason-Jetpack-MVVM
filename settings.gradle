@@ -1,0 +1,3 @@
+include ':BaseMvvm'
+include ':app'
+rootProject.name = "Jason-Jetpack-MVVM"

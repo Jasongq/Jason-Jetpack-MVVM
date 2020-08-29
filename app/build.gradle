@@ -1,0 +1,188 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        flavorDimensions "default"
+
+        //ndk { //选择要添加的对应cpu类型的.so库。
+        /* 'armeabi-v7a','armeabi-v8a','x86' ,  'armeabi', 'x86_64', 'mips', 'mips64'*/
+        //armeabi：万金油架构平台（占用率：0%）
+        //armeabi-v7a：曾经主流的架构平台（占用率：10%）
+        //arm64-v8a：目前主流架构平台（占用率：90%）
+        //abiFilters "armeabi-v7a", "arm64-v8a"
+        //}
+
+        //开启Dex分包
+        multiDexEnabled true
+
+        // 使用矢量图支持库（为了兼容 API 21 以下）
+        // 阿里巴巴矢量图库：https://www.iconfont.cn/
+        //vectorDrawables.useSupportLibrary = true
+
+        buildFeatures{
+            dataBinding = true
+        }
+
+        //使用Kotlin实验特性
+        androidExtensions {
+            experimental = true
+        }
+
+        //RxHttp
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        //必须，告知RxHttp你依赖的okhttp版本，目前已适配 v3.12.0 - v4.7.2版本  (v4.3.0除外)
+                        rxhttp_okhttp: rootProject.ext.version["okhttpVersion"],
+                        //使用asXxx方法时必须，告知RxHttp你依赖的rxjava版本，可传入rxjava2、rxjava3
+                        //rxhttp_rxjava: 'rxjava3',
+                        //rxhttp_package: 'rxhttp'   //非必须，指定RxHttp相关类的生成路径，即包名
+                ]
+            }
+        }
+
+    }
+    File propFile =rootProject.file('signing.properties')
+    Properties props =new Properties()
+    props.load(new FileInputStream(propFile))
+    //props.getProperty("RELEASE_KEY_PASSWORD")
+    signingConfigs {
+        release {
+            keyAlias props['RELEASE_KEY_ALIAS']
+            keyPassword props['RELEASE_KEY_PASSWORD']
+            storeFile file(props['RELEASE_STORE_FILE'])
+            storePassword props['RELEASE_STORE_PASSWORD']
+        }
+    }
+
+    buildTypes {
+        release {
+            buildConfigField "boolean",  "IS_DEBUG", "false"
+            buildConfigField "String",   "BASE_URL",     "\"https://www.wanandroid.com/\""
+            debuggable true
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "apk-${variant.versionCode}-${variant.versionName}-${releaseTime()}-release.apk"
+                }
+            }
+        }
+        debug {
+            buildConfigField "boolean",  "IS_DEBUG",     "true"
+            buildConfigField "String",   "BASE_URL",     "\"https://www.wanandroid.com/\""
+            debuggable false
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+    }
+    // 友盟多渠道打包
+    android.productFlavors {
+        tencent {}  // 应用宝
+        xiaomi {}   // 小米
+        huawei {}   // 华为
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [channel: name]
+        }
+    }
+
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+        jumboMode = true
+        preDexLibraries = false
+        additionalParameters = [
+                '--multi-dex',//多分包
+                '--set-max-idx-number=60000'//每个包内方法数上限
+        ]
+    }
+
+}
+
+//获取编译时间
+static def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation rootProject.ext.dependencies["kotlin-stdlib"]
+    implementation rootProject.ext.dependencies["core-ktx"]
+    implementation rootProject.ext.dependencies["kotlinx-coroutines-android"]
+    implementation rootProject.ext.dependencies["kotlinx-coroutines-core"]
+    implementation rootProject.ext.dependencies["appcompat"]
+    implementation rootProject.ext.dependencies["constraint"]
+    implementation rootProject.ext.dependencies["viewpager"]
+    implementation rootProject.ext.dependencies["recyclerview"]
+    implementation rootProject.ext.dependencies["viewpager2"]
+    implementation rootProject.ext.dependencies["material"]
+    implementation rootProject.ext.dependencies["multidex"]
+
+//    api(rootProject.ext.dependencies["appcompat-v7"]) {
+//        exclude module: 'support-v4'
+//    }
+
+    //core framework
+    implementation project(path: ':BaseMvvm')
+
+    //okhttp3+retrofit2
+    implementation rootProject.ext.dependencies["okhttp3"]
+    implementation rootProject.ext.dependencies["okhttp3-logging-interceptor"]
+    implementation rootProject.ext.dependencies["retrofit2"]
+    implementation rootProject.ext.dependencies["retrofit2-converter-gson"]
+    implementation rootProject.ext.dependencies["retrofit2-converter-scalars"]
+
+
+    implementation rootProject.ext.dependencies["gson"]
+    implementation rootProject.ext.dependencies["autosize"]
+    implementation rootProject.ext.dependencies["mmkv"]
+    implementation rootProject.ext.dependencies["statusBar"]
+    implementation rootProject.ext.dependencies["toast"]
+
+    implementation rootProject.ext.dependencies["airbnbLottie"]
+
+
+    implementation rootProject.ext.dependencies["rxhttp"]
+    kapt rootProject.ext.dependencies["rxhttp-compiler"]
+
+
+
+}
